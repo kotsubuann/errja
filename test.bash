@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-FileCopyrightText: 2026 あなたの名前
+# SPDX-FileCopyrightText: 2026 HarunaYamagishi
 # SPDX-License-Identifier: BSD-3-Clause
 
 cd "$(dirname "$0")" || exit 1
