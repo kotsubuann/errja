@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 HarunaYamagishi
+# SPDX-License-Identifier: BSD-3-Clause
+
+import os
+import re
+import subprocess
+import sys
+
+DICTIONARY = [
+    (r"No such file or directory", "ファイルまたはディレクトリがありません"),
+    (r"Permission denied", "許可がありません(権限不足)"),
+    (r"ModuleNotFoundError: No module named '(.+)'", "モジュール '{0}' が見つかりません"),
+    (r"No space left on device", "ディスク容量が不足しています"),
+    (r"Could not read from remote repository.", "リモートリポジトリから読み込めませんでした"),
+    (r"Command not found", "コマンドが見つかりません"),
+    (r"Unable to locate package", "パッケージが不明です"),
+    (r"Connection timed out", "接続がタイムアウトしました"),
+]
+
+
+def translate(line):
+    for pattern, ja in DICTIONARY:
+        m = re.search(pattern, line)
+        if m:
+            return ja.format(*m.groups())
+    return None
+
+def main(argv):
+    if len(argv) < 2:
+        print(__doc__, file=sys.stderr)
+        return 2
+
+    env = {**os.environ, "LC_ALL": "C.UTF-8", "LANGUAGE": "C"}
+
+    try:
+        result = subprocess.run(argv[1:], capture_output=True, text=True, env=env)
+    except FileNotFoundError:
+        print(f"errja: {argv[1]}: コマンドが見つかりません", file=sys.stderr)
+        return 127
+
+    sys.stdout.write(result.stdout)
+    sys.stderr.write(result.stderr)
+
+    for line in result.stderr.splitlines():
+        ja = translate(line)
+        if ja:
+            sys.stderr.write(f"{ja}\n")
+
+    return result.returncode
+
+if __name__ == "__main__": sys.exit(main(sys.argv))
+
+
