@@ -13,7 +13,7 @@ DICTIONARY = [
     (r"ModuleNotFoundError: No module named '(.+)'", "モジュール '{0}' が見つかりません"),
     (r"No space left on device", "ディスク容量が不足しています"),
     (r"Could not read from remote repository.", "リモートリポジトリから読み込めませんでした"),
-    (r"Command not found", "コマンドが見つかりません"),
+    (r"command not found", "コマンドが見つかりません"),
     (r"Unable to locate package", "パッケージが不明です"),
     (r"Connection timed out", "接続がタイムアウトしました"),
 ]
